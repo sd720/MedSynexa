@@ -43,15 +43,29 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 const uploadDir = path.join(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
 app.use('/uploads', express.static(uploadDir));
 
-// Health Check
+import { dbStatus } from './config/database';
+
+// Root and Health Check endpoints for Render / container uptime checkers
+const getHealthPayload = () => ({
+  status: 'OK',
+  service: 'MedSynexa Clinical AI Backend',
+  timestamp: new Date(),
+  databases: {
+    mongodb: dbStatus.mongo,
+    postgres: dbStatus.postgres,
+    ...(dbStatus.mongoError ? { mongoError: dbStatus.mongoError } : {}),
+    ...(dbStatus.postgresError ? { postgresError: dbStatus.postgresError } : {}),
+  },
+  llm: process.env.OPENROUTER_CHAT_MODEL || process.env.GEMINI_CHAT_MODEL || 'gemini-2.5-flash',
+  vectorDb: 'PostgreSQL + pgvector',
+});
+
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json(getHealthPayload());
+});
+
 app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'OK',
-    service: 'MedSynexa Clinical AI Backend',
-    timestamp: new Date(),
-    llm: process.env.OPENROUTER_CHAT_MODEL || process.env.GEMINI_CHAT_MODEL || 'gemini-2.5-flash',
-    vectorDb: 'PostgreSQL + pgvector',
-  });
+  res.status(200).json(getHealthPayload());
 });
 
 import speechRoutes from './routes/speechRoutes';
