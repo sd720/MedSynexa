@@ -112,3 +112,37 @@ export const deleteClinicalSession = async (req: Request, res: Response): Promis
   }
 };
 
+export const signOffClinicalSession = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const doctorId = req.user?.id;
+    const { id } = req.params;
+
+    if (!doctorId) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const session = await ClinicalSession.findOneAndUpdate(
+      { _id: id, userId: doctorId },
+      {
+        status: 'verified_by_physician',
+        physicianSignedOff: true,
+        signedOffAt: new Date(),
+      },
+      { new: true }
+    );
+
+    if (!session) {
+      res.status(404).json({ message: 'Session not found' });
+      return;
+    }
+
+    res.status(200).json({
+      message: 'Physician sign-off recorded successfully in EHR.',
+      session,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to sign off clinical session', error: error.message });
+  }
+};
+

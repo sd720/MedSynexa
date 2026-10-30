@@ -74,10 +74,10 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
 
   if (!document) {
     return (
-      <div className="h-full flex flex-col items-center justify-center text-slate-500 p-8 glass-panel rounded-2xl border-slate-200 bg-white">
-        <FileText className="h-16 w-16 mb-4 text-teal-600 animate-pulse opacity-60" />
-        <h3 className="text-lg font-bold text-slate-800">No Document Selected</h3>
-        <p className="text-sm mt-1 text-slate-500 text-center max-w-xs">
+      <div className="h-full flex flex-col items-center justify-center text-slate-400 p-8 rounded-3xl border border-white/10 bg-slate-900/80 backdrop-blur-2xl">
+        <FileText className="h-16 w-16 mb-4 text-teal-400 animate-pulse opacity-70" />
+        <h3 className="text-lg font-extrabold text-white">No Document Selected</h3>
+        <p className="text-xs mt-1.5 text-slate-400 text-center max-w-xs leading-relaxed font-medium">
           Select a lab PDF or clinical document from the directory to inspect the split viewer and sanitized clinical summary.
         </p>
       </div>
@@ -126,31 +126,31 @@ export const DocumentViewer: React.FC<DocumentViewerProps> = ({
 NOTE: Complete OCR text extraction is available for interactive RAG query in the chat panel.`;
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+    <div className="h-full flex flex-col bg-slate-900/90 rounded-3xl border border-white/10 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl">
       {/* Viewer Header */}
-      <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/80 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 border-b border-white/10 bg-slate-950/80 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center border border-teal-200">
+          <div className="h-10 w-10 rounded-2xl bg-teal-500/20 text-teal-300 flex items-center justify-center border border-teal-500/30 shadow-[0_0_15px_rgba(13,148,136,0.2)]">
             <FileText className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 max-w-md truncate" title={document.filename}>
+            <h2 className="text-base sm:text-lg font-extrabold text-white max-w-md truncate" title={document.filename}>
               {document.filename}
             </h2>
-            <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+            <div className="flex items-center gap-2.5 text-xs text-slate-400 mt-0.5 font-medium">
               <span>{formatBytes(document.fileSize)}</span>
               <span>•</span>
               <span>{new Date(document.uploadDate).toLocaleDateString()}</span>
               <span>•</span>
-              <span className="text-teal-700 font-medium">{document.chunkCount} RAG chunks</span>
+              <span className="text-teal-300 font-bold">{document.chunkCount} RAG chunks</span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={handleOpenPdf}
-            className="btn-secondary text-xs py-2 px-3"
+            className="btn-secondary text-xs py-2 px-3.5"
           >
             <ExternalLink className="h-3.5 w-3.5" />
             <span>Open PDF File</span>
@@ -159,7 +159,7 @@ NOTE: Complete OCR text extraction is available for interactive RAG query in the
           <button
             onClick={() => onStartChat(document._id)}
             disabled={isCreatingChat}
-            className="btn-teal text-xs py-2 px-4"
+            className="btn-teal text-xs py-2 px-4 shadow-[0_0_15px_rgba(13,148,136,0.3)]"
           >
             <Sparkles className="h-3.5 w-3.5" />
             {isCreatingChat ? 'Launching session...' : 'Start RAG Chat'}
@@ -170,24 +170,24 @@ NOTE: Complete OCR text extraction is available for interactive RAG query in the
       {/* Split View Container: Left PDF Viewer / Right Sanitized Clinical Summary */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden">
         {/* Left Pane: PDF Viewer */}
-        <div className="flex flex-col border-r border-slate-200 bg-slate-900 h-[450px] lg:h-auto overflow-hidden">
-          <div className="px-4 py-2 bg-slate-950 text-slate-300 text-xs font-medium flex items-center justify-between border-b border-slate-800">
-            <span className="font-semibold text-slate-400">Original Document Stream</span>
-            <span className="text-[10px] uppercase font-bold text-teal-400 bg-teal-950 px-2 py-0.5 rounded border border-teal-800">
+        <div className="flex flex-col border-r border-white/10 bg-slate-950/90 h-[450px] lg:h-auto overflow-hidden">
+          <div className="px-4 py-2.5 bg-slate-950 text-slate-300 text-xs font-medium flex items-center justify-between border-b border-white/10">
+            <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider">Original Document Stream</span>
+            <span className="text-[10px] uppercase font-extrabold text-teal-300 bg-teal-500/20 px-2.5 py-0.5 rounded-full border border-teal-500/40">
               {isPdf ? 'PDF OCR Active' : 'Document File'}
             </span>
           </div>
 
-          <div className="flex-1 bg-slate-900 flex items-center justify-center p-2 relative">
+          <div className="flex-1 bg-black/90 flex items-center justify-center p-2 relative">
             {loadingPdf ? (
               <div className="flex flex-col items-center justify-center text-slate-400 gap-2">
-                <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-teal-400" />
                 <span className="text-xs font-semibold">Streaming PDF file...</span>
               </div>
             ) : isPdf && pdfBlobUrl ? (
               <iframe
                 src={`${pdfBlobUrl}#toolbar=0`}
-                className="w-full h-full border-0 rounded-lg bg-white"
+                className="w-full h-full border-0 rounded-2xl bg-white"
                 title="Document Preview"
               />
             ) : (
@@ -205,13 +205,13 @@ NOTE: Complete OCR text extraction is available for interactive RAG query in the
         </div>
 
         {/* Right Pane: Sanitized Clinical Summary */}
-        <div className="flex flex-col bg-slate-50/50 p-5 overflow-y-auto">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
-            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-teal-600" />
+        <div className="flex flex-col bg-slate-900/60 p-6 overflow-y-auto">
+          <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+            <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-teal-400" />
               Sanitized Clinical Summary
             </h3>
-            <span className="text-[11px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+            <span className="text-[11px] font-extrabold text-teal-300 bg-teal-500/20 px-3 py-0.5 rounded-full border border-teal-500/40">
               Extracted from Lab PDF
             </span>
           </div>

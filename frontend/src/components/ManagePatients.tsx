@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
+import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { Trash2, UserPlus, Search, RefreshCcw } from 'lucide-react';
 import { toast, Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -43,6 +44,9 @@ export default function ManagePatients() {
   const [creating, setCreating] = useState(false);
   
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [deletingPatient, setDeletingPatient] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchPatients = async () => {
     try {
@@ -93,16 +97,23 @@ export default function ManagePatients() {
     }
   };
 
-  const handleDeletePatient = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this patient?')) return;
-    
+  const confirmDeletePatient = async () => {
+    if (!deletingPatient) return;
     try {
-      await api.delete(`/patients/${id}`);
+      setIsDeleting(true);
+      await api.delete(`/patients/${deletingPatient._id}`);
       toast.success('Patient deleted');
       fetchPatients();
+      setDeletingPatient(null);
     } catch (error) {
       toast.error('Failed to delete patient');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleDeletePatient = (patient: any) => {
+    setDeletingPatient(patient);
   };
 
   const filteredPatients = patients.filter(p => 
@@ -302,7 +313,7 @@ export default function ManagePatients() {
                           </TableCell>
                           <TableCell align="right" sx={{ verticalAlign: 'top' }}>
                             <IconButton 
-                              onClick={() => handleDeletePatient(p._id)}
+                              onClick={() => handleDeletePatient(p)}
                               color="error"
                               size="small"
                               sx={{ bgcolor: 'rgba(239, 68, 68, 0.08)' }}
@@ -318,9 +329,18 @@ export default function ManagePatients() {
               )}
             </Box>
           </Card>
-
         </Box>
       </Box>
+
+      <DeleteConfirmationModal
+        isOpen={!!deletingPatient}
+        title="Delete Patient Record"
+        itemTitle={deletingPatient?.name || "Patient Record"}
+        description="Are you sure you want to permanently delete this patient record? This action cannot be undone."
+        onClose={() => setDeletingPatient(null)}
+        onConfirm={confirmDeletePatient}
+        loading={isDeleting}
+      />
     </Box>
   );
 }

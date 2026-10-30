@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/api';
+import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import {
   FileText,
   Search,
@@ -45,6 +46,9 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({ onStartChatWithDoc
 
   const [isUploadingGeneral, setIsUploadingGeneral] = useState(false);
   const [isUploadingLab, setIsUploadingLab] = useState(false);
+  
+  const [deletingDoc, setDeletingDoc] = useState<DocumentItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchDocuments();
@@ -86,15 +90,22 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({ onStartChatWithDoc
     }
     e.target.value = '';
   };
-
-  const handleDelete = async (docId: string) => {
-    if (!confirm('Are you sure you want to delete this reference document?')) return;
+  const confirmDeleteDoc = async () => {
+    if (!deletingDoc) return;
     try {
-      await api.delete(`/documents/${docId}`);
-      setDocuments(documents.filter((d) => d._id !== docId));
+      setIsDeleting(true);
+      await api.delete(`/documents/${deletingDoc._id}`);
+      setDocuments(documents.filter((d) => d._id !== deletingDoc._id));
+      setDeletingDoc(null);
     } catch {
       alert('Failed to delete document.');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleDelete = (doc: DocumentItem) => {
+    setDeletingDoc(doc);
   };
 
   const handleSaveRename = async (docId: string) => {
@@ -222,7 +233,7 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({ onStartChatWithDoc
               <Edit2 className="h-3.5 w-3.5" />
             </button>
             <button
-              onClick={() => handleDelete(doc._id)}
+              onClick={() => handleDelete(doc)}
               className="p-1 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
               title="Delete"
             >
@@ -384,6 +395,16 @@ export const DocumentsList: React.FC<DocumentsListProps> = ({ onStartChatWithDoc
           </>
         )}
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={!!deletingDoc}
+        title="Delete Reference Document"
+        itemTitle={deletingDoc?.filename || ""}
+        description="Are you sure you want to delete this document? This action cannot be undone."
+        onClose={() => setDeletingDoc(null)}
+        onConfirm={confirmDeleteDoc}
+        loading={isDeleting}
+      />
     </div>
   );
 };

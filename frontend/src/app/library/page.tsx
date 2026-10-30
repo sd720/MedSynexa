@@ -15,6 +15,7 @@ import {
   Search,
   CheckCircle2,
 } from "lucide-react";
+import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal";
 import { Navbar } from "../../components/Navbar";
 
 export default function LibraryManagerPage() {
@@ -22,6 +23,23 @@ export default function LibraryManagerPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deletingDoc, setDeletingDoc] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const confirmDelete = async () => {
+    if (!deletingDoc) return;
+    try {
+      setIsDeleting(true);
+      await api.delete(`/documents/${deletingDoc._id}`);
+      toast.success("Document removed from clinical library.");
+      fetchDocuments();
+      setDeletingDoc(null);
+    } catch (err) {
+      toast.error("Failed to delete document");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   useEffect(() => {
     fetchDocuments();
@@ -66,15 +84,8 @@ export default function LibraryManagerPage() {
     }
   };
 
-  const handleDelete = async (docId: string) => {
-    if (!window.confirm("Delete this document from your clinical library?")) return;
-    try {
-      await api.delete(`/documents/${docId}`);
-      toast.success("Document removed.");
-      fetchDocuments();
-    } catch (err) {
-      toast.error("Failed to delete document");
-    }
+  const handleDelete = (doc: any) => {
+    setDeletingDoc(doc);
   };
 
   const handleDownload = async (docId: string, filename: string) => {
@@ -111,33 +122,38 @@ export default function LibraryManagerPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col">
+    <div className="min-h-screen text-slate-100 font-sans flex flex-col bg-[#080F19]">
       <Toaster position="top-right" />
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-200/80 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b border-white/10 gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-              <BookOpen className="w-7 h-7 text-teal-700" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-teal-500/10 text-teal-400 border border-teal-500/20 mb-3 shadow-[0_0_15px_rgba(13,148,136,0.2)]">
+              <BookOpen className="w-3.5 h-3.5" /> Clinical Knowledge Base
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight flex items-center gap-3">
               Medical RAG Knowledge Base & Library
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
+            <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
               Manage clinical textbooks, ICMR guidelines, and hospital protocols indexed for semantic AI search
             </p>
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <input
-              type="text"
-              placeholder="Search library..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="px-3.5 py-1.5 bg-white border border-slate-200 rounded-full text-xs text-slate-900 placeholder-slate-400 focus:border-teal-600 outline-none w-full sm:w-48"
-            />
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search library..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-900/90 border border-white/15 rounded-full text-xs text-white placeholder-slate-400 focus:border-teal-400 focus:ring-1 focus:ring-teal-400/40 outline-none transition-all"
+              />
+            </div>
 
-            <label className="btn-teal text-xs py-2 px-4 shrink-0 cursor-pointer">
+            <label className="btn-teal text-xs py-2.5 px-5 shrink-0 cursor-pointer shadow-[0_0_20px_rgba(13,148,136,0.4)]">
               {uploading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" /> Uploading...
@@ -161,55 +177,58 @@ export default function LibraryManagerPage() {
         {/* Content Grid */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-teal-600 mb-3" />
-            <p className="text-xs text-slate-500 font-semibold">Loading medical knowledge base...</p>
+            <Loader2 className="w-10 h-10 animate-spin text-teal-400 mb-3" />
+            <p className="text-xs text-slate-400 font-semibold">Loading medical knowledge base...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDocs.length === 0 ? (
-              <div className="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
-                <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-sm font-bold text-slate-700 mb-1">No Medical Documents Found</h3>
-                <p>Upload a PDF guideline or clinical textbook to begin semantic vector search.</p>
+              <div className="col-span-full text-center py-16 bg-slate-900/80 rounded-3xl border border-white/10 text-slate-400 text-xs backdrop-blur-xl">
+                <BookOpen className="w-12 h-12 text-slate-500 mx-auto mb-3" />
+                <h3 className="text-sm font-extrabold text-white mb-1">No Medical Documents Found</h3>
+                <p className="text-slate-400">Upload a PDF guideline or clinical textbook to begin semantic vector search.</p>
               </div>
             ) : (
               filteredDocs.map((doc) => (
                 <div
                   key={doc._id}
-                  className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition-all flex flex-col justify-between group"
+                  className="p-6 rounded-3xl bg-slate-900/80 border border-white/10 shadow-lg hover:border-teal-500/50 hover:shadow-[0_0_30px_rgba(13,148,136,0.25)] transition-all duration-300 flex flex-col justify-between group backdrop-blur-2xl relative overflow-hidden"
                 >
+                  {/* Ambient Accent Glow */}
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/10 rounded-full blur-xl pointer-events-none group-hover:bg-teal-500/20 transition-all" />
+
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="badge-clinical badge-teal">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Vector Indexed
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-[0_0_12px_rgba(13,148,136,0.2)]">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" /> Vector Indexed
                       </span>
                       <button
-                        onClick={() => handleDelete(doc._id)}
-                        className="p-1 text-slate-400 hover:text-rose-600 transition-colors"
+                        onClick={() => setDeletingDoc(doc)}
+                        className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                         title="Delete Document"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <h3 className="text-sm font-bold text-slate-900 mb-1 line-clamp-2 group-hover:text-teal-700 transition-colors" title={doc.filename}>
+                    <h3 className="text-base font-extrabold text-white mb-1.5 line-clamp-2 group-hover:text-teal-300 transition-colors" title={doc.filename}>
                       {doc.filename}
                     </h3>
-                    <span className="text-[11px] text-slate-400 font-medium block mb-4">
+                    <span className="text-xs text-slate-400 font-medium block mb-5">
                       Uploaded {new Date(doc.uploadDate).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 flex items-center gap-2">
+                  <div className="pt-4 border-t border-white/10 flex items-center gap-3">
                     <button
                       onClick={() => handleView(doc._id)}
-                      className="flex-1 btn-secondary text-xs py-1.5 px-3"
+                      className="flex-1 btn-secondary text-xs py-2.5 px-4 min-h-[44px]"
                     >
                       <Eye className="w-3.5 h-3.5" /> View
                     </button>
                     <button
                       onClick={() => handleDownload(doc._id, doc.filename)}
-                      className="flex-1 btn-secondary text-xs py-1.5 px-3"
+                      className="flex-1 btn-secondary text-xs py-2.5 px-4 min-h-[44px]"
                     >
                       <Download className="w-3.5 h-3.5" /> Download
                     </button>
@@ -219,6 +238,16 @@ export default function LibraryManagerPage() {
             )}
           </div>
         )}
+
+        <DeleteConfirmationModal
+          isOpen={!!deletingDoc}
+          title="Remove Guideline Document"
+          itemTitle={deletingDoc?.filename || ""}
+          description="Are you sure you want to delete this document from the RAG knowledge base? This action cannot be undone."
+          onClose={() => setDeletingDoc(null)}
+          onConfirm={confirmDelete}
+          loading={isDeleting}
+        />
       </main>
     </div>
   );

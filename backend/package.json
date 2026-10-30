@@ -4,7 +4,7 @@
   "description": "MedSynexa — India-Localized Clinical AI Copilot Backend",
   "main": "dist/index.js",
   "scripts": {
-    "build": "node --max-old-space-size=8192 ./node_modules/typescript/bin/tsc",
+    "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
   },

@@ -12,39 +12,54 @@ import {
   Users,
   BookOpen,
   LogOut,
-  User,
+  ShieldCheck,
   Sparkles,
+  Eye,
+  EyeOff,
+  Wifi,
+  WifiOff,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { usePhi } from '../context/PhiContext';
 
 const NAV_ITEMS = [
   { name: 'OPD Copilot', href: '/opd', icon: Stethoscope },
   { name: 'X-Ray Radiology', href: '/xray', icon: Zap },
   { name: 'Drug Safety', href: '/drug-safety', icon: Pill },
-  { name: 'Lab PDFs & Reports', href: '/documents', icon: FileSearch },
-  { name: 'Patient Directory', href: '/patients', icon: Users },
-  { name: 'Medical RAG Library', href: '/library', icon: BookOpen },
+  { name: 'Lab Reports', href: '/documents', icon: FileSearch },
+  { name: 'Patient EHR', href: '/patients', icon: Users },
+  { name: 'Medical RAG', href: '/library', icon: BookOpen },
 ];
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
+  const { phiMasked, togglePhiMask } = usePhi();
+  const [isOnline, setIsOnline] = React.useState(true);
+
+  React.useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/85 backdrop-blur-xl shadow-xs transition-all">
-      {/* Top Gradient Border Line */}
-      <div className="h-0.5 w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-500" />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-        {/* Brand Logo */}
+    <header className="sticky top-0 z-50 w-full px-4 sm:px-6 pt-3 pb-2 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto h-14 bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-full px-4 sm:px-6 flex items-center justify-between gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+        {/* Brand Logo & Clinical Status */}
         <Link href="/" className="flex items-center gap-3 shrink-0 group">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-800 text-white flex items-center justify-center shadow-md shadow-teal-700/25 border border-teal-500/40 group-hover:scale-105 transition-transform">
-            <Activity className="w-5 h-5 text-teal-200" />
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-600 text-white flex items-center justify-center shadow-[0_0_15px_rgba(13,148,136,0.5)] group-hover:scale-105 transition-transform">
+            <Activity className="w-4 h-4 text-white" />
           </div>
-          <div>
-            <span className="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
               MedSynexa
-              <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200/80 shadow-2xs">
+              <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
                 CLINICAL AI
               </span>
             </span>
@@ -52,7 +67,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Primary Route Navigation */}
-        <nav className="hidden lg:flex items-center gap-1 bg-slate-100/70 p-1 rounded-2xl border border-slate-200/80">
+        <nav className="hidden lg:flex items-center gap-1 bg-slate-950/60 p-1 rounded-full border border-white/10">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -61,42 +76,69 @@ export const Navbar: React.FC = () => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
                   isActive
-                    ? 'bg-white text-teal-800 border border-teal-200 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                    ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white shadow-[0_0_15px_rgba(13,148,136,0.4)] border border-teal-400/30'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-teal-600' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-teal-200' : 'text-slate-500'}`} />
                 <span>{item.name}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Right Section: User & Auth */}
-        <div className="flex items-center gap-3">
+        {/* Right Section: Controls, User & Auth */}
+        <div className="flex items-center gap-2.5">
+          {/* Wi-Fi Hospital Network Status Indicator */}
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold border ${
+              isOnline
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                : 'bg-rose-500/20 text-rose-300 border-rose-500/30 animate-pulse'
+            }`}
+            title={isOnline ? 'Hospital Wi-Fi Connected (Live EHR Sync)' : 'Hospital Wi-Fi Disconnected (Offline Cache Active)'}
+          >
+            {isOnline ? <Wifi className="w-3 h-3 text-emerald-400" /> : <WifiOff className="w-3 h-3 text-rose-400" />}
+            <span className="hidden xl:inline">{isOnline ? 'Live EHR Sync' : 'Offline'}</span>
+          </div>
+
+          {/* PHI Privacy Masking Toggle */}
+          <button
+            onClick={togglePhiMask}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold border transition-colors ${
+              phiMasked
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                : 'bg-slate-800 text-slate-400 border-white/10 hover:text-white'
+            }`}
+            title={phiMasked ? 'PHI Masking Active (Patient Names Obscured)' : 'Click to Mask Patient Names on Shared Screens'}
+          >
+            {phiMasked ? <EyeOff className="w-3 h-3 text-amber-400" /> : <Eye className="w-3 h-3" />}
+            <span className="hidden xl:inline">{phiMasked ? 'PHI Hidden' : 'PHI Visible'}</span>
+          </button>
+
           {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800">
-                <div className="w-6 h-6 rounded-full bg-teal-700 text-white flex items-center justify-center text-[10px] font-extrabold">
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-white/10 text-xs font-semibold text-white">
+                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white flex items-center justify-center text-[10px] font-extrabold shadow-xs">
                   {user?.firstName?.[0] || 'D'}
                 </div>
-                <span className="hidden sm:inline">
+                <span className="hidden sm:inline text-slate-200 font-bold">
                   {user?.firstName ? `Dr. ${user.firstName}` : 'Dr. Practitioner'}
                 </span>
               </div>
 
               <button
                 onClick={logout}
-                className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors border border-slate-200 shadow-2xs"
+                className="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-full transition-colors border border-white/10"
                 title="Logout"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <Link href="/login" className="btn-teal text-xs py-2 px-4 shadow-sm">
+            <Link href="/login" className="btn-teal text-xs py-1.5 px-4 shadow-sm">
               Sign In
             </Link>
           )}
@@ -104,7 +146,7 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* Mobile Sub-Header Navigation */}
-      <div className="lg:hidden flex items-center gap-2 overflow-x-auto px-4 py-2 border-t border-slate-100 bg-slate-50/80">
+      <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto px-4 py-2 mt-2 rounded-2xl bg-slate-900/90 border border-white/10 backdrop-blur-md">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -112,10 +154,10 @@ export const Navbar: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${
+              className={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
                 isActive
-                  ? 'bg-teal-700 text-white shadow-sm'
-                  : 'bg-white text-slate-600 border border-slate-200'
+                  ? 'bg-teal-600 text-white shadow-xs'
+                  : 'bg-slate-800 text-slate-400 border border-white/5'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -129,3 +171,5 @@ export const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
+

@@ -272,20 +272,20 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ chat, onRefreshCha
   };
 
   return (
-    <div className="h-full flex flex-col bg-white overflow-hidden relative">
+    <div className="h-full flex flex-col bg-slate-950/80 overflow-hidden relative backdrop-blur-xl">
 
       {/* ── Header ── */}
-      <div className="px-5 py-3 border-b border-gray-100 bg-white flex items-center justify-between gap-3 shrink-0 no-print">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className={`icon-container ${isLabDoc ? 'icon-cyan' : 'icon-blue'} h-8 w-8`}>
-            {isLabDoc ? <FlaskConical className="h-4 w-4" /> : <Stethoscope className="h-4 w-4" />}
+      <div className="px-5 py-4 border-b border-white/10 bg-slate-900/90 flex items-center justify-between gap-3 shrink-0 no-print">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-9 w-9 rounded-2xl bg-teal-500/20 text-teal-300 border border-teal-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(13,148,136,0.2)]">
+            {isLabDoc ? <FlaskConical className="h-4.5 w-4.5" /> : <Stethoscope className="h-4.5 w-4.5" />}
           </div>
           <div className="min-w-0">
-            <h2 className="text-xs font-bold text-[#111111] truncate" title={chat.title}>
+            <h2 className="text-xs sm:text-sm font-extrabold text-white truncate" title={chat.title}>
               {chat.title}
             </h2>
-            <p className="text-[9px] text-gray-400 font-semibold flex items-center gap-1 mt-0.5">
-              <BookOpen className="h-3 w-3 text-blue-500" />
+            <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
+              <BookOpen className="h-3 w-3 text-teal-400" />
               <span className="truncate">{documentName}</span>
             </p>
           </div>
@@ -294,27 +294,27 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ chat, onRefreshCha
         {chat.messages && chat.messages.length > 0 && (
           <button
             onClick={handleDownloadTranscript}
-            className="btn-ghost px-3 py-1.5 text-xs flex items-center gap-1.5 text-blue-600 hover:bg-blue-50 border border-transparent hover:border-blue-100"
+            className="px-3 py-1.5 text-xs font-bold rounded-xl text-teal-300 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/30 transition-all"
             title="Download Chat Transcript"
           >
-            <Download className="h-3.5 w-3.5" />
+            <Download className="h-3.5 w-3.5 inline mr-1.5" />
             <span className="hidden sm:inline">Download Chat</span>
           </button>
         )}
       </div>
 
       {/* ── Message Area ── */}
-      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4 bg-[#FAFAFA]">
+      <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4 bg-slate-950/60">
 
         {(!chat.messages || chat.messages.length === 0) && !isSubmitting && (
-          <div className="h-full flex flex-col items-center justify-center text-center gap-3.5 py-10">
-            <div className="h-12 w-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center border border-teal-200 shadow-sm">
-              <Stethoscope className="h-6 w-6" />
+          <div className="h-full flex flex-col items-center justify-center text-center gap-4 py-10">
+            <div className="h-14 w-14 rounded-3xl bg-teal-500/20 text-teal-300 flex items-center justify-center border border-teal-500/40 shadow-[0_0_20px_rgba(13,148,136,0.3)]">
+              <Stethoscope className="h-7 w-7" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-slate-900">Reference Consultation Active</h3>
-              <p className="text-[10px] text-slate-500 mt-1 max-w-xs leading-normal">
-                Submit questions or dictate symptoms to search <span className="font-semibold text-teal-800">{documentName}</span>.
+              <h3 className="text-sm font-extrabold text-white">Reference Consultation Active</h3>
+              <p className="text-xs text-slate-400 mt-1 max-w-xs leading-relaxed font-medium">
+                Submit questions or dictate symptoms to search <span className="font-bold text-teal-300">{documentName}</span>.
               </p>
             </div>
 
@@ -328,7 +328,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ chat, onRefreshCha
                 <button
                   key={cIdx}
                   onClick={() => submitQuestion(chip)}
-                  className="px-3 py-1.5 bg-white hover:bg-teal-50 text-slate-600 hover:text-teal-800 border border-slate-200 rounded-xl text-[11px] font-semibold transition-all shadow-2xs hover:shadow-xs"
+                  className="px-3.5 py-2 bg-slate-900 hover:bg-teal-500/20 text-slate-300 hover:text-white border border-white/10 hover:border-teal-500/40 rounded-2xl text-xs font-semibold transition-all shadow-md"
                 >
                   ⚡ {chip}
                 </button>
@@ -342,120 +342,62 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ chat, onRefreshCha
           return (
             <div key={index} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
               {!isUser && (
-                <div className="h-7 w-7 rounded-full bg-blue-50 border border-blue-100/50 flex items-center justify-center shrink-0 mr-2 mt-1 shadow-sm">
-                  <Stethoscope className="h-3.5 w-3.5 text-blue-600" />
+                <div className="h-8 w-8 rounded-full bg-teal-500/20 border border-teal-500/30 flex items-center justify-center shrink-0 mr-2.5 mt-1 shadow-xs">
+                  <Stethoscope className="h-4 w-4 text-teal-300" />
                 </div>
               )}
 
               <div className="max-w-[85%] sm:max-w-[75%] space-y-2.5">
                 <div
-                  className={`rounded-2xl px-4 py-4 border ${
+                  className={`rounded-3xl px-5 py-4 border backdrop-blur-xl ${
                     isUser
-                      ? 'bg-teal-700 border-teal-700 text-white rounded-br-sm shadow-sm'
-                      : 'bg-white border-slate-200 text-slate-900 rounded-bl-sm shadow-sm'
+                      ? 'bg-teal-600/90 border-teal-500/50 text-white rounded-br-sm shadow-[0_0_20px_rgba(13,148,136,0.3)]'
+                      : 'bg-slate-900/90 border-white/10 text-slate-100 rounded-bl-sm shadow-xl'
                   }`}
                 >
-                  <div className={`text-[9px] font-bold uppercase tracking-wider mb-2 ${isUser ? 'text-teal-200' : 'text-slate-400'}`}>
+                  <div className={`text-[10px] font-extrabold uppercase tracking-wider mb-2 ${isUser ? 'text-teal-200' : 'text-teal-400'}`}>
                     {isUser ? 'Doctor' : 'MedSynexa AI'}
                   </div>
 
-                  <div className={`text-xs sm:text-sm leading-relaxed ${isUser ? 'prose prose-sm prose-invert max-w-none text-white' : ''}`}>
-                    {isUser ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {msg.content}
-                      </ReactMarkdown>
-                    ) : (
-                      <SanitizedMedicalContent content={msg.content} badgeLabel={undefined} />
-                    )}
-                  </div>
+                  {isUser ? (
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-medium">{msg.content}</p>
+                  ) : (
+                    <SanitizedMedicalContent content={msg.content} badgeLabel="RAG Source Verified" />
+                  )}
                 </div>
-
-                {/* Sources / Citations */}
-                {!isUser && msg.citations && msg.citations.length > 0 && (
-                  <div className="space-y-1.5 ml-1">
-                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      <BookOpen className="h-3.5 w-3.5 text-blue-500" />
-                      <span>References ({msg.citations.length})</span>
-                    </div>
-
-                    {msg.citations.map((cite, cIdx) => (
-                      <details
-                        key={cIdx}
-                        className="group border border-gray-200/60 rounded-xl bg-white overflow-hidden text-xs shadow-sm"
-                      >
-                        <summary className="px-3 py-2 font-semibold text-gray-600 hover:bg-[#FAFAFA] cursor-pointer list-none flex items-center justify-between transition-colors">
-                          <span className="flex items-center gap-1.5 text-[10px]">
-                            <Quote className="h-3 w-3 text-blue-500 shrink-0" />
-                            <span className="truncate max-w-xs">{cite.sourceName} (Section {cite.chunkIndex + 1})</span>
-                          </span>
-                          <span className="text-[9px] text-gray-300 group-open:rotate-180 transition-transform">▼</span>
-                        </summary>
-                        <div className="px-3 py-2.5 bg-gray-50 border-t border-gray-100 text-gray-500 leading-relaxed max-h-24 overflow-y-auto text-[10px]">
-                          "{cite.text}"
-                        </div>
-                      </details>
-                    ))}
-                  </div>
-                )}
               </div>
-
-              {isUser && (
-                <div className="h-7 w-7 rounded-full bg-blue-100 border border-blue-200/50 flex items-center justify-center shrink-0 ml-2 mt-1 shadow-sm">
-                  <Mic className="h-3.5 w-3.5 text-blue-600" />
-                </div>
-              )}
             </div>
           );
         })}
 
-        {/* Typing indicator */}
         {isSubmitting && (
-          <div className="flex justify-start">
-            <div className="h-7 w-7 rounded-full bg-blue-50 border border-blue-100/50 flex items-center justify-center shrink-0 mr-2 mt-1 shadow-sm">
-              <Stethoscope className="h-3.5 w-3.5 text-blue-600" />
-            </div>
-            <div className="bg-white border border-gray-200/80 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
-              <div className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mb-2">MedSynexa AI</div>
-              <div className="flex items-center gap-1 text-blue-600 text-[11px] font-semibold">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                <span>Searching clinical library...</span>
-              </div>
-            </div>
+          <div className="flex items-center gap-3 p-4 bg-slate-900/80 border border-white/10 rounded-2xl max-w-sm">
+            <Loader2 className="w-4 h-4 animate-spin text-teal-400" />
+            <span className="text-xs text-slate-300 font-medium">Cross-referencing RAG index embeddings...</span>
           </div>
         )}
-
-        {error && (
-          <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2">
-            <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        <div ref={chatEndRef} />
       </div>
 
       {/* ── Input Bar ── */}
-      <div className="px-4 py-3 border-t border-gray-100 bg-white shrink-0 no-print">
-        
+      <div className="p-4 border-t border-white/10 bg-slate-900/90 shrink-0 no-print">
         {isListening && (
-          <div className="absolute bottom-[76px] left-1/2 -translate-x-1/2 bg-red-50 border border-red-200 text-red-600 text-[10px] font-bold px-3.5 py-1 rounded-full shadow-md flex items-center gap-1.5 animate-bounce">
-            <span className="h-1.5 w-1.5 bg-red-500 rounded-full animate-pulse"></span>
-            Listening... Click stop when done
+          <div className="mb-2 text-center bg-rose-950/60 border border-rose-500/30 text-rose-300 text-[10px] font-bold px-3 py-1 rounded-full animate-pulse">
+            <span className="h-2 w-2 bg-rose-500 rounded-full inline-block mr-1.5" />
+            Listening to voice dictation... Click mic to stop
           </div>
         )}
 
         <form onSubmit={handleSend} className="flex gap-2 items-end">
-          
           <button
             type="button"
             onClick={toggleListening}
             disabled={isWhisperProcessing}
-            className={`px-3 py-2.5 rounded-xl flex items-center justify-center shrink-0 transition-all border ${
+            className={`p-3 rounded-2xl flex items-center justify-center shrink-0 transition-all border ${
               isListening 
-                ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100 animate-pulse' 
+                ? 'bg-rose-950/80 text-rose-300 border-rose-500/50 animate-pulse' 
                 : isWhisperProcessing
-                ? 'bg-blue-50 text-blue-600 border-blue-200 cursor-wait'
-                : 'bg-gray-50 text-gray-500 border-gray-200/80 hover:bg-gray-100 hover:text-blue-600'
+                ? 'bg-slate-800 text-teal-300 border-teal-500/40 cursor-wait'
+                : 'bg-slate-950/80 text-slate-400 border-white/10 hover:text-white hover:bg-slate-800'
             }`}
             title="Voice Dictation"
           >
@@ -479,15 +421,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ chat, onRefreshCha
                 }
               }}
               disabled={isSubmitting || isWhisperProcessing}
-              className={`input-field w-full px-3 py-2.5 text-xs resize-none min-h-[38px] max-h-[100px] ${
-                isListening ? 'border-red-300 ring-2 ring-red-100 bg-red-50/20' : ''
-              } ${isWhisperProcessing ? 'opacity-70' : ''}`}
+              className="w-full px-4 py-2.5 text-xs text-white bg-slate-950/80 border border-white/15 focus:border-teal-400 rounded-2xl outline-none transition-all placeholder:text-slate-500 resize-none min-h-[42px] max-h-[100px]"
               placeholder={isWhisperProcessing ? "Transcribing audio..." : isListening ? "Listening..." : `Ask about ${documentName}…`}
               rows={1}
               required={!isListening && !isWhisperProcessing}
             />
             {isListening && interimTranscript && (
-              <div className="absolute top-full left-0 mt-0.5 px-3 text-[9px] text-blue-600 italic truncate w-full">
+              <div className="absolute top-full left-0 mt-1 px-3 text-[10px] text-teal-300 italic truncate w-full">
                 {interimTranscript}
               </div>
             )}
@@ -496,7 +436,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ chat, onRefreshCha
           <button
             type="submit"
             disabled={isSubmitting || isWhisperProcessing || (!question.trim() && !isListening)}
-            className="btn-primary px-3.5 py-2.5 rounded-xl flex items-center justify-center shrink-0"
+            className="btn-teal p-3 rounded-2xl flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(13,148,136,0.3)]"
           >
             <Send className="h-4.5 w-4.5" />
           </button>

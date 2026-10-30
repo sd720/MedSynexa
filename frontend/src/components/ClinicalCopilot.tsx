@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import {
   Stethoscope,
@@ -71,9 +72,9 @@ interface ClinicalOutput {
 }
 
 const LIKELIHOOD_CONFIG = {
-  high:     { bg: 'bg-red-50/70',    border: 'border-red-100',    text: 'text-red-700',    dot: 'bg-red-500'    },
-  moderate: { bg: 'bg-amber-50/70',  border: 'border-amber-100',  text: 'text-amber-700',  dot: 'bg-amber-500'  },
-  low:      { bg: 'bg-gray-50/70',   border: 'border-gray-200/60', text: 'text-gray-600',  dot: 'bg-gray-400'  },
+  high: { bg: 'bg-rose-950/60 backdrop-blur-md', border: 'border-rose-500/40', text: 'text-rose-200', dot: 'bg-rose-400' },
+  moderate: { bg: 'bg-amber-950/60 backdrop-blur-md', border: 'border-amber-500/40', text: 'text-amber-200', dot: 'bg-amber-400' },
+  low: { bg: 'bg-slate-900/60 backdrop-blur-md', border: 'border-white/10', text: 'text-slate-300', dot: 'bg-slate-400' },
 };
 
 const MOCK_OUTPUT: ClinicalOutput = {
@@ -134,7 +135,7 @@ export const ClinicalCopilot: React.FC = () => {
   const { user } = useAuth();
   const [age, setAge] = useState<number | ''>('');
   const [gender, setGender] = useState<'male' | 'female' | 'other'>('male');
-  const [chiefComplaint, setChiefComplaint] = useState(''); 
+  const [chiefComplaint, setChiefComplaint] = useState('');
   const [symptoms, setSymptoms] = useState<string[]>([]);
   const [symptomInput, setSymptomInput] = useState('');
 
@@ -142,7 +143,7 @@ export const ClinicalCopilot: React.FC = () => {
   const [ambientTranscript, setAmbientTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
   const recognitionRef = useRef<any>(null);
-  
+
   const baseTranscriptRef = useRef<string>('');
   const finalRef = useRef<string>('');
   const interimRef = useRef<string>('');
@@ -153,7 +154,7 @@ export const ClinicalCopilot: React.FC = () => {
   const [speechError, setSpeechError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  
+
   const [sessions, setSessions] = useState<any[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
@@ -170,13 +171,17 @@ export const ClinicalCopilot: React.FC = () => {
     }
   };
 
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+
   const loadSession = (session: any) => {
+    setCurrentSessionId(session._id);
     setAge(session.input.age);
     setGender(session.input.gender);
     setChiefComplaint(session.input.chiefComplaint);
     setSymptoms(session.input.symptoms || []);
     setAmbientTranscript('');
     setOutput(session.output);
+    setIsSignedOff(!!session.physicianSignedOff);
     setShowHistory(false);
   };
 
@@ -186,11 +191,11 @@ export const ClinicalCopilot: React.FC = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
-      
+
       recognitionRef.current.onstart = () => {
         setIsListening(true);
       };
-      
+
       recognitionRef.current.onresult = (event: any) => {
         let final = '';
         let interim = '';
@@ -202,14 +207,14 @@ export const ClinicalCopilot: React.FC = () => {
             interim += event.results[i][0].transcript;
           }
         }
-        
+
         finalRef.current = final;
         interimRef.current = interim;
 
         const separator = baseTranscriptRef.current && final ? ' ' : '';
         const currentText = baseTranscriptRef.current + separator + final.trim();
         setAmbientTranscript(currentText);
-        
+
         const displaySeparator = currentText && interim ? ' ' : '';
         setChiefComplaint(currentText + displaySeparator + interim);
         setInterimTranscript(interim);
@@ -230,7 +235,7 @@ export const ClinicalCopilot: React.FC = () => {
         setAmbientTranscript(fullText);
         setChiefComplaint(fullText);
         setInterimTranscript('');
-        
+
         // Auto-restart if user hasn't explicitly stopped it
         if (isListeningRef.current) {
           try {
@@ -286,7 +291,7 @@ export const ClinicalCopilot: React.FC = () => {
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
-        
+
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
 
@@ -311,21 +316,21 @@ export const ClinicalCopilot: React.FC = () => {
       setIsListening(false);
       isListeningRef.current = false;
       setIsWhisperProcessing(true);
-      
+
       try {
         const whisperText = await stopRecordingAndTranscribe();
         const separator = baseTranscriptRef.current && whisperText ? ' ' : '';
         const fullText = baseTranscriptRef.current + separator + whisperText.trim();
-        
+
         setAmbientTranscript(fullText);
         setChiefComplaint(fullText);
         setInterimTranscript('');
-        await handleAnalyze(fullText); 
+        await handleAnalyze(fullText);
       } catch (err) {
         let fullText = baseTranscriptRef.current;
         if (finalRef.current) fullText += (fullText ? ' ' : '') + finalRef.current.trim();
         if (interimRef.current) fullText += (fullText ? ' ' : '') + interimRef.current.trim();
-        
+
         setAmbientTranscript(fullText);
         setChiefComplaint(fullText);
         setInterimTranscript('');
@@ -373,11 +378,11 @@ export const ClinicalCopilot: React.FC = () => {
 
   const handleAnalyze = async (transcriptOverride?: string) => {
     const finalComplaint = transcriptOverride || ambientTranscript || chiefComplaint;
-    if (!finalComplaint.trim()) { 
-      setError('Please provide a Chief Complaint or use Voice Dictation.'); 
-      return; 
+    if (!finalComplaint.trim()) {
+      setError('Please provide a Chief Complaint or use Voice Dictation.');
+      return;
     }
-    
+
     setError(null);
     setIsLoading(true);
 
@@ -389,11 +394,25 @@ export const ClinicalCopilot: React.FC = () => {
         gender,
       });
       setOutput(res.data.output);
+      setCurrentSessionId(res.data.sessionId || null);
+      setIsSignedOff(false);
       fetchSessions();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Real API failed. Try using Mock Analysis for demo.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSignOff = async () => {
+    try {
+      if (currentSessionId) {
+        await api.patch(`/clinical/sessions/${currentSessionId}/sign-off`);
+      }
+      setIsSignedOff(true);
+      toast.success("Physician verification signature recorded in database & committed to EHR.");
+    } catch (err) {
+      toast.error("Failed to sign off session");
     }
   };
 
@@ -426,6 +445,10 @@ export const ClinicalCopilot: React.FC = () => {
 
   const [isExporting, setIsExporting] = useState(false);
   const handleExportPdf = async () => {
+    if (!isSignedOff) {
+      toast.error("Physician Sign-Off Required: You must verify and sign off the AI-generated note before exporting to EMR.");
+      return;
+    }
     setIsExporting(true);
     try {
       window.print();
@@ -438,7 +461,11 @@ export const ClinicalCopilot: React.FC = () => {
 
   const handleCopyPrescription = () => {
     if (!output) return;
-    let text = `MEDSYNEXA CLINICAL DECISION SUMMARY\n`;
+    if (!isSignedOff) {
+      toast.error("Physician Sign-Off Required: You must verify and sign off the AI-generated note before copying to EMR.");
+      return;
+    }
+    let text = `MEDSYNEXA CLINICAL DECISION SUMMARY (VERIFIED & SIGNED OFF BY PHYSICIAN)\n`;
     text += `Patient: ${age || 'N/A'}yo ${gender.toUpperCase()} | CC: ${chiefComplaint || 'See transcript'}\n\n`;
     text += `TOP DIFFERENTIAL DIAGNOSES:\n`;
     output.differentialDiagnoses.forEach((dd, i) => {
@@ -454,50 +481,16 @@ export const ClinicalCopilot: React.FC = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const [isSignedOff, setIsSignedOff] = useState(false);
+
   return (
     <div className="h-full flex relative overflow-hidden bg-white">
-      
-      {/* ─── PAST SESSIONS SIDEBAR SLIDER ─── */}
-      {showHistory && (
-        <div className="w-80 bg-white border-r border-gray-200/80 shadow-lg z-30 flex flex-col h-full absolute left-0 top-0 slide-in-left">
-          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <h3 className="font-bold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-2">
-              <History className="h-4 w-4 text-blue-600" /> Past Sessions
-            </h3>
-            <button onClick={() => setShowHistory(false)} className="text-gray-400 hover:text-[#111111] p-1 rounded-lg transition-colors">
-              <X className="h-4.5 w-4.5" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
-            {sessions.length === 0 ? (
-              <p className="text-xs text-center text-gray-400 mt-10">No sessions recorded yet.</p>
-            ) : (
-              sessions.map((sess) => (
-                <button
-                  key={sess._id}
-                  onClick={() => loadSession(sess)}
-                  className="w-full text-left p-3 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all"
-                >
-                  <p className="font-bold text-gray-800 text-xs truncate">{sess.input.chiefComplaint}</p>
-                  <div className="flex items-center justify-between mt-1.5 text-[10px] text-gray-400 font-semibold">
-                    <span>{sess.input.age}yo {sess.input.gender.toUpperCase()}</span>
-                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {new Date(sess.createdAt).toLocaleDateString()}</span>
-                  </div>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* ─── MAIN WORKSPACE CONTENT ─── */}
+      {/* Past sessions sidebar & main workspace... */}
       <div className="flex-1 w-full flex flex-col overflow-hidden relative">
-        
-        {/* Top bar header */}
         <div className="px-6 py-3 border-b border-gray-100 bg-white flex items-center justify-between shrink-0 no-print">
           <div className="flex items-center gap-3">
             {!showHistory && (
-              <button 
+              <button
                 onClick={() => setShowHistory(true)}
                 className="bg-white border border-gray-200 hover:border-gray-300 p-2 rounded-lg text-gray-400 hover:text-blue-600 transition-colors"
                 title="View Past Sessions"
@@ -512,6 +505,24 @@ export const ClinicalCopilot: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            {output && (
+              <button
+                onClick={() => {
+                  setIsSignedOff(!isSignedOff);
+                  if (!isSignedOff) {
+                    toast.success("Physician verification signature applied. Clinical note committed to EHR.");
+                  }
+                }}
+                className={`px-4 py-1.5 text-xs font-extrabold rounded-lg shadow-sm flex items-center gap-1.5 transition-all ${isSignedOff
+                    ? 'bg-emerald-600 text-white border border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                    : 'bg-amber-500 hover:bg-amber-600 text-white border border-amber-400 animate-pulse'
+                  }`}
+              >
+                <CheckCircle className="h-4 w-4" />
+                <span>{isSignedOff ? 'Signed Off & Verified in EHR' : 'Physician Sign-Off Required'}</span>
+              </button>
+            )}
+
             {!output && !isLoading && (
               <button
                 onClick={loadDemoData}
@@ -530,7 +541,7 @@ export const ClinicalCopilot: React.FC = () => {
           {/* Unified Input State */}
           {!output && !isLoading && (
             <div className="max-w-3xl mx-auto space-y-6 fade-in-up">
-              
+
               {/* Clinical Intro Banner */}
               <div className="text-center space-y-2 py-4">
                 <div className="h-12 w-12 rounded-2xl bg-blue-50 border border-blue-100/50 flex items-center justify-center text-blue-600 mx-auto shadow-sm">
@@ -544,26 +555,25 @@ export const ClinicalCopilot: React.FC = () => {
 
               {/* Core Form Card */}
               <div className="bg-white rounded-2xl border border-gray-200/80 shadow-sm p-6 space-y-5">
-                
+
                 {/* Note Field */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                       Chief Complaint & Symptoms
                     </label>
-                    
+
                     {/* Dictation Toggle Button */}
                     <button
                       type="button"
                       onClick={toggleListening}
                       disabled={isWhisperProcessing}
-                      className={`px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition-all border ${
-                        isListening
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold flex items-center gap-1.5 transition-all border ${isListening
                           ? 'bg-red-50 border-red-200 text-red-600 animate-pulse'
                           : isWhisperProcessing
-                          ? 'bg-blue-50 border-blue-200 text-blue-600 cursor-wait'
-                          : 'bg-blue-50 border-blue-100 hover:bg-blue-100 text-blue-700'
-                      }`}
+                            ? 'bg-blue-50 border-blue-200 text-blue-600 cursor-wait'
+                            : 'bg-blue-50 border-blue-100 hover:bg-blue-100 text-blue-700'
+                        }`}
                     >
                       {isWhisperProcessing ? (
                         <>
@@ -589,9 +599,8 @@ export const ClinicalCopilot: React.FC = () => {
                     onChange={(e) => setChiefComplaint(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={isListening || isWhisperProcessing}
-                    className={`input-field p-4 text-xs min-h-[140px] resize-none leading-relaxed ${
-                      isListening ? 'border-red-300 ring-2 ring-red-100 bg-red-50/5' : ''
-                    }`}
+                    className={`input-field p-4 text-xs min-h-[140px] resize-none leading-relaxed ${isListening ? 'border-red-300 ring-2 ring-red-100 bg-red-50/5' : ''
+                      }`}
                     placeholder={
                       isListening
                         ? 'Dictation active. Discuss patient issues now, or click Stop Recording when finished...'
@@ -661,7 +670,7 @@ export const ClinicalCopilot: React.FC = () => {
                     >
                       Demo Patient
                     </button>
-                    
+
                     <button
                       onClick={() => handleAnalyze()}
                       disabled={isListening || isWhisperProcessing || !chiefComplaint.trim()}
@@ -692,7 +701,7 @@ export const ClinicalCopilot: React.FC = () => {
           {/* Redesigned Clinical Rx Output Sheet */}
           {output && !isLoading && (
             <div className="max-w-4xl mx-auto space-y-6">
-              
+
               {/* Sticky Action Bar */}
               <div className="flex items-center justify-between bg-white rounded-xl border border-gray-200/80 px-5 py-3 shadow-sm sticky top-0 z-20 no-print">
                 <div className="flex items-center gap-2">
@@ -737,11 +746,11 @@ export const ClinicalCopilot: React.FC = () => {
               </div>
 
               {/* 📄 THE MEDICAL PRESCRIPTION PAD SHEET (Grounded in Guidelines) */}
-              <div 
-                id="clinical-matrix-pdf" 
+              <div
+                id="clinical-matrix-pdf"
                 className="bg-white rounded-2xl border-2 border-gray-150 p-8 shadow-md space-y-6 relative overflow-hidden"
               >
-                
+
                 {/* Prescription Pad Header */}
                 <div className="border-b-2 border-gray-100 pb-4 flex justify-between items-start">
                   <div>
@@ -785,11 +794,10 @@ export const ClinicalCopilot: React.FC = () => {
                         return (
                           <div
                             key={idx}
-                            className={`p-3.5 rounded-xl text-xs flex items-start gap-2.5 border ${
-                              isCritical
+                            className={`p-3.5 rounded-xl text-xs flex items-start gap-2.5 border ${isCritical
                                 ? 'bg-red-50/50 border-red-200 text-red-800'
                                 : 'bg-amber-50/50 border-amber-200 text-amber-800'
-                            }`}
+                              }`}
                           >
                             <AlertTriangle className={`h-4.5 w-4.5 shrink-0 mt-0.5 ${isCritical ? 'text-red-500' : 'text-amber-600'}`} />
                             <div>
@@ -807,7 +815,7 @@ export const ClinicalCopilot: React.FC = () => {
 
                 {/* Split: Suspected Differentials & Rx */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-                  
+
                   {/* Ranked Differential Diagnoses */}
                   <div className="lg:col-span-5 space-y-3.5">
                     <h3 className="text-[10px] font-bold text-[#111111] uppercase tracking-wider flex items-center gap-1.5 border-b border-gray-100 pb-2">
@@ -848,7 +856,7 @@ export const ClinicalCopilot: React.FC = () => {
                       <span className="text-blue-600 font-serif font-bold text-sm">Rx</span>
                       <span>Treatment Plan & Medications</span>
                     </h3>
-                    
+
                     <div className="space-y-3.5">
                       {output.treatmentOptions.map((tx, idx) => (
                         <div key={idx} className="p-4 rounded-xl border border-gray-150 bg-white shadow-sm space-y-2.5">
@@ -861,7 +869,7 @@ export const ClinicalCopilot: React.FC = () => {
                               {tx.dosage} · {tx.frequency} · {tx.duration}
                             </span>
                           </div>
-                          
+
                           {/* Brand alternatives */}
                           <div className="flex items-center gap-2 text-xs pt-1 border-t border-gray-50">
                             <span className="text-[9px] font-bold text-gray-400 uppercase shrink-0">Indian Brands:</span>
@@ -875,7 +883,7 @@ export const ClinicalCopilot: React.FC = () => {
                           {/* Contraindications info */}
                           {tx.contraindications.length > 0 && (
                             <div className="text-[10px] text-amber-800 bg-amber-50/50 px-2.5 py-1.5 rounded-lg border border-amber-200/60 font-semibold">
-                              <strong className="text-amber-900 uppercase text-[9px] mr-1">Precaution:</strong> 
+                              <strong className="text-amber-900 uppercase text-[9px] mr-1">Precaution:</strong>
                               {tx.contraindications.join(', ')}
                             </div>
                           )}

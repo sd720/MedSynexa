@@ -23,6 +23,7 @@ import {
   Search,
 } from "lucide-react";
 import { Navbar } from "../../components/Navbar";
+import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal";
 import { SanitizedMedicalContent } from "../../components/SanitizedMedicalContent";
 
 export default function OPDPage() {
@@ -44,6 +45,32 @@ export default function OPDPage() {
   const finalRef = useRef<string>("");
   const interimRef = useRef<string>("");
 
+  const [deletingSession, setDeletingSession] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const confirmDeleteSession = async () => {
+    if (!deletingSession) return;
+    try {
+      setIsDeleting(true);
+      await api.delete(`/clinical/sessions/${deletingSession._id}`);
+      toast.success("OPD Session deleted successfully");
+      setSessions((prev) => prev.filter((s) => s._id !== deletingSession._id));
+      if (selectedSession?._id === deletingSession._id) {
+        setSelectedSession(null);
+      }
+      setDeletingSession(null);
+    } catch (err: any) {
+      toast.error("Failed to delete OPD session");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteSession = (e: React.MouseEvent, session: any) => {
+    e.stopPropagation();
+    setDeletingSession(session);
+  };
+
   useEffect(() => {
     fetchSessions();
   }, []);
@@ -57,24 +84,6 @@ export default function OPDPage() {
       toast.error("Failed to load OPD sessions");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDeleteSession = async (e: React.MouseEvent, sessionId: string) => {
-    e.stopPropagation();
-    if (!window.confirm("Are you sure you want to delete this OPD session record?")) {
-      return;
-    }
-
-    try {
-      await api.delete(`/clinical/sessions/${sessionId}`);
-      toast.success("OPD Session deleted successfully");
-      setSessions((prev) => prev.filter((s) => s._id !== sessionId));
-      if (selectedSession?._id === sessionId) {
-        setSelectedSession(null);
-      }
-    } catch (err: any) {
-      toast.error("Failed to delete OPD session");
     }
   };
 
@@ -192,26 +201,28 @@ export default function OPDPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans flex flex-col">
+    <div className="min-h-screen text-slate-100 font-sans flex flex-col">
       <Toaster position="top-right" />
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
         {/* Header Hero Banner */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative bg-slate-900/80 backdrop-blur-2xl text-white rounded-3xl p-6 sm:p-8 shadow-[0_15px_35px_rgba(0,0,0,0.6)] border border-white/10 overflow-hidden">
+          {/* Ambient Mesh Glows */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/15 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
 
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-bold uppercase tracking-wider">
-                <Stethoscope className="w-3.5 h-3.5" /> Voice & Clinical Copilot
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(13,148,136,0.2)]">
+                <Stethoscope className="w-3.5 h-3.5 text-teal-400" />
+                <span>Voice Dictation & OPD Copilot</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                OPD Clinical Consultation Copilot
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                OPD Clinical Consultation Workspace
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-                Real-time ambient voice dictation, automated differential diagnosis generator, and ICMR treatment protocol engine.
+                Ambient voice dictation, automated differential diagnosis generator, and ICMR treatment protocol engine.
               </p>
             </div>
 
@@ -221,7 +232,7 @@ export default function OPDPage() {
                   setChiefComplaint("");
                   setIsCreating(true);
                 }}
-                className="btn-teal text-xs py-3 px-6 shadow-lg shadow-teal-700/30 shrink-0"
+                className="btn-teal text-xs py-3 px-6 shadow-[0_0_20px_rgba(13,148,136,0.4)] shrink-0"
               >
                 <Plus className="w-4 h-4" />
                 <span>New OPD Dictation</span>
@@ -231,34 +242,34 @@ export default function OPDPage() {
 
           {/* Quick Metrics Bar */}
           {!isCreating && !selectedSession && (
-            <div className="mt-6 pt-6 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
-              <div className="bg-slate-800/60 backdrop-blur-md p-3 rounded-2xl border border-slate-700/60 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold">
+            <div className="mt-6 pt-6 border-t border-white/10 grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+              <div className="bg-slate-950/60 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold border border-teal-500/30">
                   {sessions.length}
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Total Consultations</span>
-                  <span className="font-bold text-slate-200">Logged History</span>
+                  <span className="font-bold text-white">Logged History</span>
                 </div>
               </div>
 
-              <div className="bg-slate-800/60 backdrop-blur-md p-3 rounded-2xl border border-slate-700/60 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
-                  <Mic className="w-4 h-4 text-emerald-400" />
+              <div className="bg-slate-950/60 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center font-bold border border-teal-500/30">
+                  <Mic className="w-4 h-4 text-teal-300" />
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Voice Dictation</span>
-                  <span className="font-bold text-slate-200">Whisper AI Enabled</span>
+                  <span className="font-bold text-white">Whisper AI Enabled</span>
                 </div>
               </div>
 
-              <div className="bg-slate-800/60 backdrop-blur-md p-3 rounded-2xl border border-slate-700/60 flex items-center gap-3 col-span-2 sm:col-span-1">
-                <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
+              <div className="bg-slate-950/60 backdrop-blur-md p-3.5 rounded-2xl border border-white/10 flex items-center gap-3 col-span-2 sm:col-span-1">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-[11px] border border-emerald-500/30">
                   ICMR
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block">Treatment Engine</span>
-                  <span className="font-bold text-slate-200">Clinical Protocol</span>
+                  <span className="font-bold text-white">Clinical Protocol</span>
                 </div>
               </div>
             </div>
@@ -446,19 +457,19 @@ export default function OPDPage() {
 
             {/* Past Sessions Grid */}
             {!isCreating && !selectedSession && (
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-                    <History className="w-4 h-4 text-teal-600" />
+              <div className="space-y-5">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900/80 p-4 rounded-2xl border border-white/10 backdrop-blur-xl shadow-lg">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
+                    <History className="w-4 h-4 text-teal-400" />
                     <span>Past Encounters ({sessions.length})</span>
                   </div>
 
-                  <div className="relative w-full sm:w-72">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                  <div className="relative w-full sm:w-80">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                       type="text"
                       placeholder="Filter OPD history by symptoms..."
-                      className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full text-xs text-slate-900 placeholder-slate-400 focus:border-teal-600 focus:bg-white outline-none transition-all"
+                      className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-white/15 rounded-full text-xs text-white placeholder-slate-400 focus:border-teal-400 focus:ring-1 focus:ring-teal-400/40 outline-none transition-all"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -467,7 +478,7 @@ export default function OPDPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {sessions.filter((s) => s.input?.chiefComplaint?.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 ? (
-                    <div className="col-span-full text-center py-16 bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
+                    <div className="col-span-full text-center py-16 bg-slate-900/60 rounded-3xl border border-white/10 text-slate-400 text-xs backdrop-blur-xl">
                       No OPD encounter history found. Click "New OPD Dictation" to begin.
                     </div>
                   ) : (
@@ -477,11 +488,14 @@ export default function OPDPage() {
                     <div
                       key={session._id}
                       onClick={() => setSelectedSession(session)}
-                      className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                      className="p-5 rounded-3xl bg-slate-900/80 border border-white/10 shadow-lg hover:border-teal-500/50 hover:shadow-[0_0_30px_rgba(13,148,136,0.25)] transition-all duration-300 cursor-pointer flex flex-col justify-between group hover:-translate-y-1 backdrop-blur-xl relative overflow-hidden"
                     >
+                      {/* Ambient Card Accent Glow */}
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/10 rounded-full blur-xl pointer-events-none group-hover:bg-teal-500/20 transition-all" />
+
                       <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                        <div className="flex items-center justify-between mb-3.5">
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-2.5 py-0.5 rounded-full border border-teal-500/40">
                             OPD Session
                           </span>
                           <div className="flex items-center gap-2">
@@ -489,22 +503,22 @@ export default function OPDPage() {
                               {new Date(session.createdAt).toLocaleDateString()}
                             </span>
                             <button
-                              onClick={(e) => handleDeleteSession(e, session._id)}
-                              className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors"
+                              onClick={(e) => handleDeleteSession(e, session)}
+                              className="p-1 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
                               title="Delete OPD Record"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>
-                        <p className="text-sm font-bold text-slate-900 line-clamp-2 mb-3 group-hover:text-teal-700 transition-colors">
+                        <p className="text-sm font-bold text-white line-clamp-2 mb-3.5 group-hover:text-teal-300 transition-colors leading-snug">
                           {session.input.chiefComplaint}
                         </p>
                       </div>
 
-                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-teal-700">
+                      <div className="pt-3.5 border-t border-white/10 flex items-center justify-between text-xs font-bold text-teal-300 group-hover:text-teal-200">
                         <span>View Sanitized Summary</span>
-                        <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                        <span className="group-hover:translate-x-1.5 transition-transform font-bold">&rarr;</span>
                       </div>
                     </div>
                   ))
@@ -514,6 +528,16 @@ export default function OPDPage() {
             )}
           </>
         )}
+
+        <DeleteConfirmationModal
+          isOpen={!!deletingSession}
+          title="Delete OPD Clinical Session"
+          itemTitle={deletingSession?.input?.chiefComplaint || "OPD Session Record"}
+          description="Are you sure you want to delete this OPD consultation record and clinical note? This action cannot be undone."
+          onClose={() => setDeletingSession(null)}
+          onConfirm={confirmDeleteSession}
+          loading={isDeleting}
+        />
       </main>
     </div>
   );

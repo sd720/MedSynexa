@@ -119,6 +119,9 @@ export interface IClinicalSession extends MongoDocument {
   userId: Types.ObjectId;
   input: IClinicalInput;
   output: IClinicalOutput;
+  status: 'pending_physician_review' | 'verified_by_physician';
+  physicianSignedOff: boolean;
+  signedOffAt?: Date;
   createdAt: Date;
 }
 

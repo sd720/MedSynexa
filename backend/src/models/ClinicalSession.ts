@@ -73,6 +73,16 @@ const clinicalSessionSchema = new Schema<IClinicalSession>(
       referralSpeciality: String,
       responseTimeMs: Number,
     },
+    status: {
+      type: String,
+      enum: ['pending_physician_review', 'verified_by_physician'],
+      default: 'pending_physician_review',
+    },
+    physicianSignedOff: {
+      type: Boolean,
+      default: false,
+    },
+    signedOffAt: Date,
   },
   {
     timestamps: true,

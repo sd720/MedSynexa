@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext';
+import { PhiProvider } from '../context/PhiContext';
 
 export const Providers: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Initialize query client inside state to avoid state leakage across requests (SSR)
@@ -20,7 +21,9 @@ export const Providers: React.FC<{ children: React.ReactNode }> = ({ children })
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <PhiProvider>{children}</PhiProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

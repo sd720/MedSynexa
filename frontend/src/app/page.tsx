@@ -195,106 +195,84 @@ export default function HighConvertingLandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-[#F4F7F6] text-[#0F172A] selection:bg-teal-200 selection:text-teal-900 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#080F19] text-slate-100 selection:bg-teal-500/30 selection:text-teal-200 flex flex-col font-sans">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-24 md:pt-20 md:pb-32 border-b border-slate-200/80">
-        {/* Animated Background Mesh Glows */}
-        <div className="absolute top-10 left-1/4 w-96 h-96 bg-teal-400/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
-        <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDelay: '1s' }} />
+      <section className="relative pt-12 pb-24 md:pt-20 md:pb-32 border-b border-white/10 overflow-hidden bg-[#080F19]">
+        {/* Ambient Radial Mesh Glows */}
+        <div className="absolute top-10 left-1/4 w-96 h-96 bg-teal-500/20 rounded-full blur-[100px] pointer-events-none animate-glow-pulse" />
+        <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none animate-glow-pulse" style={{ animationDelay: '2s' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold bg-teal-100/90 text-teal-800 border border-teal-300 shadow-xs">
-              <Sparkles className="w-3.5 h-3.5 text-teal-600 animate-spin" style={{ animationDuration: '6s' }} />
-              <span>AI-Powered Clinical Intelligence Platform</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-teal-500/15 text-teal-300 border border-teal-500/30 shadow-[0_0_20px_rgba(13,148,136,0.3)]">
+              <Sparkles className="w-3.5 h-3.5 text-teal-400 animate-spin" style={{ animationDuration: '8s' }} />
+              <span>India-Localized Clinical AI Decision Support Engine</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
-              Presenting{" "}
-              <span className="gradient-text-teal underline decoration-teal-300 decoration-wavy underline-offset-8">
-                MedSynexa
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+              Executive Clinical AI Copilot for{" "}
+              <span className="gradient-text-teal">
+                Modern Healthcare
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-700 font-bold leading-relaxed max-w-2xl mx-auto">
-              An AI-Powered Clinical Intelligence Platform built using a Medical RAG Pipeline for evidence-based clinical support and documentation automation.
+            <p className="text-base sm:text-lg text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto">
+              Sub-10-second differential diagnoses, automated SOAP note generation, ICMR/NHP protocol alignment, and lab OCR parser for Indian hospitals and clinics.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href="/opd" className="btn-teal text-sm py-3.5 px-8 w-full sm:w-auto shadow-xl shadow-teal-700/25">
-                <span>Launch Clinical Copilot</span>
+              <Link href="/opd" className="btn-teal text-sm py-3.5 px-8 w-full sm:w-auto shadow-[0_0_25px_rgba(13,148,136,0.4)]">
+                <span>Launch Clinical Workspace</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a href="#features" className="btn-secondary text-sm py-3.5 px-8 w-full sm:w-auto">
-                <span>Explore Capabilities</span>
+                <span>View Clinical Capabilities</span>
               </a>
             </div>
 
             {/* Trust Badges Strip */}
-            <div className="pt-10 border-t border-slate-200/80 grid grid-cols-2 sm:grid-cols-4 gap-3 text-slate-700 text-xs font-bold">
-              <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-sm">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="pt-10 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-slate-300 text-xs font-semibold">
+              <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-slate-900/80 border border-white/10 backdrop-blur-md shadow-md">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>HIPAA Compliant</span>
               </div>
-              <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-sm">
-                <Lock className="w-4 h-4 text-teal-600 shrink-0" />
+              <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-slate-900/80 border border-white/10 backdrop-blur-md shadow-md">
+                <Lock className="w-4 h-4 text-teal-400 shrink-0" />
                 <span>End-to-End Encrypted</span>
               </div>
-              <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-sm">
-                <Server className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-slate-900/80 border border-white/10 backdrop-blur-md shadow-md">
+                <Server className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span>Role-Based Access</span>
               </div>
-              <div className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/80 border border-slate-200/80 shadow-2xs backdrop-blur-sm">
-                <Activity className="w-4 h-4 text-teal-600 shrink-0" />
+              <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-slate-900/80 border border-white/10 backdrop-blur-md shadow-md">
+                <Activity className="w-4 h-4 text-teal-400 shrink-0" />
                 <span>Zero Data Retention</span>
               </div>
             </div>
           </div>
 
-          {/* Interactive Live UI Preview Showcase Card */}
+          {/* Clean Interactive Module Showcase */}
           <div className="mt-14 max-w-5xl mx-auto relative">
-            {/* Floating Left Live Widget */}
-            <div className="hidden lg:flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl absolute -left-12 top-1/3 z-20 animate-float-slow">
-              <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold">
-                <Mic className="w-4 h-4 animate-pulse" />
-              </div>
-              <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Speech-to-Text</span>
-                <span className="text-xs font-extrabold text-slate-800">Real-Time Dictation</span>
-              </div>
-            </div>
-
-            {/* Floating Right Live Widget */}
-            <div className="hidden lg:flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl absolute -right-12 bottom-1/4 z-20 animate-float-slow" style={{ animationDelay: '2s' }}>
-              <div className="w-8 h-8 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center font-bold">
-                <Brain className="w-4 h-4" />
-              </div>
-              <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Medical RAG</span>
-                <span className="text-xs font-extrabold text-teal-800">Evidence Retrieval</span>
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-slate-200/90 bg-white shadow-2xl overflow-hidden hover:shadow-teal-900/10 transition-shadow">
-              <div className="bg-slate-900 px-5 py-3.5 flex items-center justify-between border-b border-slate-800">
+            <div className="rounded-3xl border border-white/15 bg-slate-900/90 shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden backdrop-blur-2xl">
+              <div className="bg-slate-950 px-5 py-3.5 flex items-center justify-between border-b border-white/10 text-white">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-rose-500" />
                   <div className="w-3 h-3 rounded-full bg-amber-500" />
                   <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                  <span className="text-xs text-slate-400 font-mono ml-2 hidden sm:inline">medsynexa.ai / clinical-platform</span>
+                  <span className="text-xs text-slate-400 font-mono ml-2 hidden sm:inline">medsynexa.ai / clinical-workspace</span>
                 </div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-teal-300 bg-teal-950/90 px-3 py-1 rounded-full border border-teal-800 flex items-center gap-1.5">
+                <span className="text-[11px] font-bold tracking-wider text-teal-300 bg-teal-950/80 px-3 py-1 rounded-full border border-teal-700/50 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" />
                   Interactive Feature Showcase
                 </span>
               </div>
 
-              <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-50/60">
+              <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-900/40">
                 <div className="lg:col-span-4 space-y-2.5">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                    Select Feature Module
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                    Select Clinical Suite
                   </span>
                   {FEATURES.map((feat) => {
                     const Icon = feat.icon;
@@ -305,48 +283,48 @@ export default function HighConvertingLandingPage() {
                         onClick={() => setActiveFeature(feat)}
                         className={`w-full text-left p-3.5 rounded-2xl border text-xs transition-all flex items-center justify-between ${
                           isSelected
-                            ? "bg-teal-50 border-teal-300 text-teal-900 font-extrabold shadow-sm translate-x-1"
-                            : "bg-white border-slate-200 text-slate-700 hover:bg-slate-100/80"
+                            ? "bg-teal-500/20 border-teal-500/50 text-teal-200 font-extrabold shadow-[0_0_20px_rgba(13,148,136,0.3)] translate-x-1"
+                            : "bg-slate-800/50 border-white/5 text-slate-400 hover:bg-slate-800 hover:text-white"
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${isSelected ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                          <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${isSelected ? 'bg-teal-600 text-white' : 'bg-slate-800 text-slate-500'}`}>
                             <Icon className="w-3.5 h-3.5" />
                           </div>
                           <span>{feat.title}</span>
                         </div>
-                        <ChevronRight className={`w-4 h-4 ${isSelected ? "text-teal-700" : "text-slate-300"}`} />
+                        <ChevronRight className={`w-4 h-4 ${isSelected ? "text-teal-400" : "text-slate-600"}`} />
                       </button>
                     );
                   })}
                 </div>
 
-                <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col justify-between">
+                <div className="lg:col-span-8 bg-slate-950/80 p-6 rounded-2xl border border-white/10 shadow-inner flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
                       <div>
-                        <span className="text-[10px] font-bold text-teal-700 uppercase tracking-wider bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                        <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 px-2.5 py-0.5 rounded-full border border-teal-500/40">
                           {activeFeature.category}
                         </span>
-                        <h3 className="text-lg font-extrabold text-slate-900 mt-1">{activeFeature.title}</h3>
+                        <h3 className="text-lg font-extrabold text-white mt-1">{activeFeature.title}</h3>
                       </div>
-                      <Link href={activeFeature.href} className="btn-teal text-xs py-2 px-4 shadow-sm">
-                        Open Module
+                      <Link href={activeFeature.href} className="btn-teal text-xs py-2 px-4">
+                        Open Workspace
                       </Link>
                     </div>
 
-                    <p className="text-xs text-slate-600 mb-4 leading-relaxed font-medium">{activeFeature.desc}</p>
+                    <p className="text-xs text-slate-300 mb-4 leading-relaxed font-normal">{activeFeature.desc}</p>
 
-                    <div className="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                    <div className="p-4 bg-slate-900/80 rounded-xl border border-white/10">
                       <SanitizedMedicalContent content={activeFeature.previewData} badgeLabel={activeFeature.metrics} />
                     </div>
                   </div>
 
-                  <div className="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                    <span className="flex items-center gap-1.5 text-emerald-700 font-bold">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Decision Support Output
+                  <div className="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+                    <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Physician Decision Support Mode
                     </span>
-                    <span className="font-mono font-bold text-xs text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">{activeFeature.metrics}</span>
+                    <span className="font-mono font-bold text-xs text-teal-300 bg-teal-950 px-2.5 py-0.5 rounded-full border border-teal-700/60">{activeFeature.metrics}</span>
                   </div>
                 </div>
               </div>
@@ -356,16 +334,16 @@ export default function HighConvertingLandingPage() {
       </section>
 
       {/* Core Platform Capabilities (Marketing Pillars Grid) */}
-      <section id="features" className="py-20 bg-white border-b border-slate-200/80">
+      <section id="features" className="py-20 bg-[#080F19] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 bg-teal-50 px-3.5 py-1 rounded-full border border-teal-200">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-3.5 py-1 rounded-full border border-teal-500/40 shadow-[0_0_15px_rgba(13,148,136,0.2)]">
               What MedSynexa Does
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
               AI-Powered Clinical Intelligence
             </h2>
-            <p className="text-sm text-slate-600 font-medium">
+            <p className="text-sm text-slate-400 font-medium">
               Streamlining clinical workflows, evidence-based reasoning, and patient records.
             </p>
           </div>
@@ -376,21 +354,21 @@ export default function HighConvertingLandingPage() {
               return (
                 <div
                   key={idx}
-                  className="rounded-3xl border border-slate-200/90 bg-white hover:border-teal-400 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group overflow-hidden hover:-translate-y-1"
+                  className="rounded-3xl border border-white/10 bg-slate-900/80 hover:border-teal-500/50 hover:shadow-[0_0_30px_rgba(13,148,136,0.2)] transition-all duration-300 flex flex-col justify-between group overflow-hidden hover:-translate-y-1 backdrop-blur-xl relative"
                 >
                   <div className="h-1.5 w-full bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-500" />
 
                   <div className="p-6">
-                    <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200/80 text-teal-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-500/30 text-teal-300 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(13,148,136,0.2)]">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <span className="text-[11px] font-bold text-teal-700 uppercase tracking-wider block mb-1">
+                    <span className="text-[11px] font-bold text-teal-300 uppercase tracking-wider block mb-1">
                       {pillar.badge}
                     </span>
-                    <h3 className="text-lg font-extrabold text-slate-900 mb-2 group-hover:text-teal-700 transition-colors">
+                    <h3 className="text-lg font-extrabold text-white mb-2 group-hover:text-teal-300 transition-colors">
                       {pillar.title}
                     </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed font-medium mb-4">{pillar.desc}</p>
+                    <p className="text-xs text-slate-400 leading-relaxed font-medium mb-4">{pillar.desc}</p>
                   </div>
                 </div>
               );
@@ -400,44 +378,44 @@ export default function HighConvertingLandingPage() {
       </section>
 
       {/* 3-Step Implementation Sequence */}
-      <section className="py-20 bg-[#F4F7F6] border-b border-slate-200/80">
+      <section className="py-20 bg-slate-950/60 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-3.5 py-1 rounded-full border border-teal-500/40">
               Seamless Workflow Integration
             </span>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-3xl font-extrabold text-white tracking-tight">
               3 Steps to Clinical Automation
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm relative hover:shadow-md transition-shadow">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-700 to-emerald-800 text-white font-extrabold text-base flex items-center justify-center mb-5 shadow-md shadow-teal-700/20">
+            <div className="p-8 rounded-3xl bg-slate-900/80 border border-white/10 shadow-lg relative hover:border-teal-500/40 transition-all backdrop-blur-xl">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-extrabold text-base flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(13,148,136,0.4)]">
                 1
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 mb-2">Real-Time Speech & Document Capture</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              <h3 className="text-base font-extrabold text-white mb-2">Real-Time Speech & Document Capture</h3>
+              <p className="text-xs text-slate-400 leading-relaxed font-medium">
                 Capture ambient doctor-patient conversations via Speech-to-Text or upload lab PDFs and chest X-rays.
               </p>
             </div>
 
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm relative hover:shadow-md transition-shadow">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-700 to-emerald-800 text-white font-extrabold text-base flex items-center justify-center mb-5 shadow-md shadow-teal-700/20">
+            <div className="p-8 rounded-3xl bg-slate-900/80 border border-white/10 shadow-lg relative hover:border-teal-500/40 transition-all backdrop-blur-xl">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-extrabold text-base flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(13,148,136,0.4)]">
                 2
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 mb-2">Medical RAG & Vision AI Pipeline</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              <h3 className="text-base font-extrabold text-white mb-2">Medical RAG & Vision AI Pipeline</h3>
+              <p className="text-xs text-slate-400 leading-relaxed font-medium">
                 Retrieves evidence-based medical knowledge, suggests differential diagnoses, and checks drug safety.
               </p>
             </div>
 
-            <div className="p-7 rounded-3xl bg-white border border-slate-200/90 shadow-sm relative hover:shadow-md transition-shadow">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-700 to-emerald-800 text-white font-extrabold text-base flex items-center justify-center mb-5 shadow-md shadow-teal-700/20">
+            <div className="p-8 rounded-3xl bg-slate-900/80 border border-white/10 shadow-lg relative hover:border-teal-500/40 transition-all backdrop-blur-xl">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-extrabold text-base flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(13,148,136,0.4)]">
                 3
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 mb-2">Physician Review & Unified EHR</h3>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              <h3 className="text-base font-extrabold text-white mb-2">Physician Review & Unified EHR</h3>
+              <p className="text-xs text-slate-400 leading-relaxed font-medium">
                 Review structured SOAP notes, edit differential diagnoses, and update longitudinal patient health records.
               </p>
             </div>
@@ -446,13 +424,13 @@ export default function HighConvertingLandingPage() {
       </section>
 
       {/* Clinical FAQ Accordion Section */}
-      <section className="py-20 bg-white border-b border-slate-200/80">
+      <section className="py-20 bg-[#080F19] border-b border-white/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-xl mx-auto mb-14 space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-full border border-teal-200 flex items-center justify-center gap-1.5 w-fit mx-auto">
-              <HelpCircle className="w-3.5 h-3.5 text-teal-600" /> Frequently Asked Questions
+            <span className="text-xs font-extrabold uppercase tracking-wider text-teal-300 bg-teal-500/20 px-3.5 py-1 rounded-full border border-teal-500/40 flex items-center justify-center gap-1.5 w-fit mx-auto shadow-[0_0_15px_rgba(13,148,136,0.2)]">
+              <HelpCircle className="w-3.5 h-3.5 text-teal-400" /> Frequently Asked Questions
             </span>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-3xl font-extrabold text-white tracking-tight">
               Platform & Clinical Decision Support FAQs
             </h2>
           </div>
@@ -463,17 +441,22 @@ export default function HighConvertingLandingPage() {
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-slate-200 bg-slate-50/50 overflow-hidden transition-all"
+                  className="rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden transition-all backdrop-blur-xl"
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full text-left p-5 flex items-center justify-between font-bold text-slate-900 text-sm hover:text-teal-700 transition-colors"
+                    className="w-full text-left p-5 flex items-center justify-between font-extrabold text-white text-sm hover:text-teal-300 transition-colors"
                   >
                     <span>{faq.q}</span>
-                    <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-teal-600' : ''}`} />
+                    <ChevronDown
+                      className={`w-4 h-4 text-teal-400 transition-transform ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
+
                   {isOpen && (
-                    <div className="px-5 pb-5 pt-0 text-xs text-slate-600 leading-relaxed font-medium border-t border-slate-200/60 pt-3 bg-white">
+                    <div className="px-5 pb-5 text-xs text-slate-300 font-medium leading-relaxed border-t border-white/5 pt-3">
                       {faq.a}
                     </div>
                   )}
@@ -484,36 +467,35 @@ export default function HighConvertingLandingPage() {
         </div>
       </section>
 
-      {/* Security & Compliance Banner */}
-      <section className="py-16 bg-gradient-to-r from-slate-950 via-slate-900 to-teal-950 text-white">
+      {/* Enterprise Protection Strip */}
+      <section className="py-16 bg-slate-950/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase tracking-wider">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Enterprise Clinical Data Protection</span>
-              </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/20 px-3.5 py-1 rounded-full border border-emerald-500/40">
+                Enterprise Clinical Data Protection
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-3 mb-2">
                 Privacy-First Data Protection & Encryption
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium max-w-2xl">
+              <p className="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed">
                 Patient privacy is paramount. MedSynexa employs end-to-end encryption (AES-256), role-based access control (RBAC), and zero-data-retention AI pipelines to safeguard sensitive medical records.
               </p>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3">
-              <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center gap-3">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/10 flex items-center gap-3.5">
                 <Lock className="w-5 h-5 text-teal-400 shrink-0" />
                 <div>
-                  <h4 className="text-xs font-bold text-white">Role-Based Access Control</h4>
+                  <h3 className="text-xs font-bold text-white">Role-Based Access Control</h3>
                   <p className="text-[11px] text-slate-400 font-medium">RBAC & granular permission controls</p>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center gap-3">
-                <Server className="w-5 h-5 text-emerald-400 shrink-0" />
+              <div className="p-4 rounded-2xl bg-slate-900/80 border border-white/10 flex items-center gap-3.5">
+                <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
                 <div>
-                  <h4 className="text-xs font-bold text-white">Provider-in-the-Loop</h4>
+                  <h3 className="text-xs font-bold text-white">Provider-In-The-Loop</h3>
                   <p className="text-[11px] text-slate-400 font-medium">All AI outputs require physician review</p>
                 </div>
               </div>
@@ -522,17 +504,18 @@ export default function HighConvertingLandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-auto bg-slate-950 text-slate-400 text-xs py-10 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      {/* Dark Footer */}
+      <footer className="py-12 bg-slate-950 text-slate-400 text-xs border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-xl bg-teal-600 text-white flex items-center justify-center font-bold">
-                <Activity className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-500/30 flex items-center justify-center font-bold text-base shadow-[0_0_15px_rgba(13,148,136,0.3)]">
+                <Stethoscope className="w-4 h-4" />
               </div>
-              <span className="text-base font-extrabold text-white tracking-tight">MedSynexa Clinical AI</span>
+              <span className="font-extrabold text-white text-base tracking-tight">MedSynexa Clinical AI</span>
             </div>
-            <div className="flex items-center gap-6 font-semibold">
+
+            <div className="flex flex-wrap gap-6 text-slate-400 font-semibold">
               <Link href="/opd" className="hover:text-white transition-colors">OPD Copilot</Link>
               <Link href="/xray" className="hover:text-white transition-colors">X-Ray Radiology</Link>
               <Link href="/drug-safety" className="hover:text-white transition-colors">Drug Safety</Link>
@@ -541,10 +524,10 @@ export default function HighConvertingLandingPage() {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-            <p>© {new Date().getFullYear()} MedSynexa Health Inc. All rights reserved.</p>
-            <p className="max-w-xl text-center md:text-right">
-              <strong className="text-slate-400">Clinical Disclaimer:</strong> MedSynexa is an AI clinical decision support tool built to assist healthcare professionals. It does not replace medical judgment or provide diagnostic certainty.
+          <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-500">
+            <p>© 2026 MedSynexa Health Inc. All rights reserved.</p>
+            <p className="max-w-xl text-center sm:text-right">
+              <strong>Clinical Disclaimer:</strong> MedSynexa is an AI clinical decision support tool built to assist healthcare professionals. It does not replace medical judgment or provide diagnostic certainty.
             </p>
           </div>
         </div>

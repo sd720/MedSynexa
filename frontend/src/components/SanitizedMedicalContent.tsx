@@ -57,7 +57,7 @@ export const SanitizedMedicalContent: React.FC<SanitizedMedicalContentProps> = (
 
   if (!result.cleanText && !result.isJson) {
     return (
-      <div className={`p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-400 text-xs italic ${className}`}>
+      <div className={`p-4 rounded-xl border border-white/10 bg-slate-950/60 text-slate-400 text-xs italic ${className}`}>
         No clinical output recorded.
       </div>
     );
@@ -67,15 +67,15 @@ export const SanitizedMedicalContent: React.FC<SanitizedMedicalContentProps> = (
   if (result.isJson && result.jsonData) {
     return (
       <div className={`space-y-4 ${className}`}>
-        <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div className="flex items-center justify-between pb-2 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-teal-600" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <Activity className="w-4 h-4 text-teal-400" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Structured Clinical Data
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-700 border border-teal-200">
-            <CheckCircle2 className="w-3 h-3 text-teal-600" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40">
+            <CheckCircle2 className="w-3 h-3 text-teal-400" />
             {badgeLabel}
           </span>
         </div>
@@ -89,26 +89,26 @@ export const SanitizedMedicalContent: React.FC<SanitizedMedicalContentProps> = (
 
   // 2. Render structured blocks
   return (
-    <div className={`space-y-3 font-sans text-slate-800 text-sm leading-relaxed ${className}`}>
+    <div className={`space-y-3 font-sans text-slate-200 text-sm leading-relaxed ${className}`}>
       {badgeLabel && (
-        <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-200/80">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-teal-50 text-teal-700 border border-teal-200">
-            <CheckCircle2 className="w-3 h-3 text-teal-600" />
+        <div className="flex items-center justify-between pb-2.5 mb-3.5 border-b border-white/10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-[0_0_15px_rgba(13,148,136,0.2)]">
+            <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" />
             {badgeLabel}
           </span>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-teal-700 bg-white hover:bg-slate-50 border border-slate-200 px-2.5 py-0.5 rounded-md transition-colors shadow-2xs"
+            className="flex items-center gap-1.5 text-[11px] font-bold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 px-3 py-1 rounded-lg transition-all shadow-xs"
             title="Copy Cleaned Summary"
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-emerald-600" />
-                <span className="text-emerald-700 font-bold">Copied!</span>
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-emerald-400 font-bold">Copied!</span>
               </>
             ) : (
               <>
-                <Copy className="w-3 h-3 text-slate-400" />
+                <Copy className="w-3.5 h-3.5 text-slate-400" />
                 <span>Copy Summary</span>
               </>
             )}
@@ -119,13 +119,13 @@ export const SanitizedMedicalContent: React.FC<SanitizedMedicalContentProps> = (
       {groupedBlocks.map((gb, idx) => {
         if (gb.type === 'kv-group' && gb.items) {
           return (
-            <div key={idx} className="rounded-xl border border-slate-200/80 bg-slate-50/60 overflow-hidden divide-y divide-slate-200/70 my-2 shadow-2xs">
+            <div key={idx} className="rounded-2xl border border-white/10 bg-slate-950/60 overflow-hidden divide-y divide-white/5 my-3 shadow-inner">
               {gb.items.map((item, i) => (
-                <div key={i} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 px-4 py-2.5 text-xs sm:text-sm hover:bg-slate-100/40 transition-colors">
-                  <span className="font-bold text-slate-700 sm:w-48 sm:shrink-0">
+                <div key={i} className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 px-4 py-3 text-xs sm:text-sm hover:bg-white/5 transition-colors">
+                  <span className="font-bold text-slate-300 sm:w-48 sm:shrink-0">
                     {renderTextWithBold(item.key)}
                   </span>
-                  <span className="text-slate-900 font-medium leading-relaxed flex-1">
+                  <span className="text-white font-medium leading-relaxed flex-1">
                     {renderTextWithBold(item.value)}
                   </span>
                 </div>
@@ -148,7 +148,7 @@ const renderTextWithBold = (text: string | undefined) => {
   const parts = text.split(/(\*\*.*?\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-bold text-slate-900">{part.slice(2, -2)}</strong>;
+      return <strong key={i} className="font-bold text-white">{part.slice(2, -2)}</strong>;
     }
     return part;
   });
@@ -160,20 +160,20 @@ const RenderBlock: React.FC<{ block: SanitizedBlock }> = ({ block }) => {
     case 'header': {
       if (block.level === 1) {
         return (
-          <h2 className="text-base sm:text-lg font-bold text-slate-900 border-b border-slate-200 pb-2 mt-5 mb-2 first:mt-0 tracking-tight">
+          <h2 className="text-base sm:text-lg font-extrabold text-white border-b border-white/10 pb-2 mt-6 mb-3 first:mt-0 tracking-tight">
             {renderTextWithBold(block.title)}
           </h2>
         );
       }
       if (block.level === 2) {
         return (
-          <h3 className="text-sm sm:text-base font-bold text-slate-800 mt-4 mb-1.5 first:mt-0 tracking-tight">
+          <h3 className="text-sm sm:text-base font-bold text-slate-100 mt-5 mb-2 first:mt-0 tracking-tight">
             {renderTextWithBold(block.title)}
           </h3>
         );
       }
       return (
-        <h4 className="text-xs sm:text-sm font-bold text-teal-800 uppercase tracking-wider mt-4 mb-1.5 first:mt-0 pb-1 border-b border-teal-100/80">
+        <h4 className="text-xs sm:text-sm font-extrabold text-teal-400 uppercase tracking-wider mt-4 mb-2 first:mt-0 pb-1 border-b border-teal-500/20">
           {renderTextWithBold(block.title)}
         </h4>
       );
@@ -181,11 +181,11 @@ const RenderBlock: React.FC<{ block: SanitizedBlock }> = ({ block }) => {
 
     case 'list': {
       return (
-        <ul className="space-y-1.5 my-2 pl-1">
+        <ul className="space-y-2 my-2.5 pl-1">
           {block.items?.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5 text-slate-700 text-xs sm:text-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 shrink-0" />
-              <span className="leading-relaxed">{renderTextWithBold(item)}</span>
+            <li key={idx} className="flex items-start gap-2.5 text-slate-200 text-xs sm:text-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 shrink-0 shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
+              <span className="leading-relaxed font-normal">{renderTextWithBold(item)}</span>
             </li>
           ))}
         </ul>
@@ -194,11 +194,11 @@ const RenderBlock: React.FC<{ block: SanitizedBlock }> = ({ block }) => {
 
     case 'kv': {
       return (
-        <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 my-2 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 text-xs sm:text-sm">
-          <span className="font-bold text-slate-700 sm:w-48 sm:shrink-0">
+        <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-3.5 my-2.5 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 text-xs sm:text-sm">
+          <span className="font-bold text-slate-300 sm:w-48 sm:shrink-0">
             {renderTextWithBold(block.key)}
           </span>
-          <span className="text-slate-900 font-medium leading-relaxed flex-1">
+          <span className="text-white font-medium leading-relaxed flex-1">
             {renderTextWithBold(block.value)}
           </span>
         </div>
@@ -211,39 +211,39 @@ const RenderBlock: React.FC<{ block: SanitizedBlock }> = ({ block }) => {
 
       return (
         <div
-          className={`p-3.5 rounded-xl border flex items-start gap-3 my-2 text-xs sm:text-sm ${
+          className={`p-4 rounded-2xl border flex items-start gap-3 my-3 text-xs sm:text-sm backdrop-blur-md ${
             isWarn
-              ? 'bg-amber-50/80 border-amber-200 text-amber-900'
+              ? 'bg-amber-950/50 border-amber-500/40 text-amber-200'
               : isSuccess
-              ? 'bg-emerald-50/80 border-emerald-200 text-emerald-900'
-              : 'bg-teal-50/80 border-teal-200 text-teal-900'
+              ? 'bg-emerald-950/50 border-emerald-500/40 text-emerald-200'
+              : 'bg-teal-950/50 border-teal-500/40 text-teal-200'
           }`}
         >
           {isWarn ? (
-            <AlertCircle className="w-4.5 h-4.5 text-amber-600 shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           ) : isSuccess ? (
-            <CheckCircle2 className="w-4.5 h-4.5 text-emerald-600 shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
           ) : (
-            <Info className="w-4.5 h-4.5 text-teal-600 shrink-0 mt-0.5" />
+            <Info className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
           )}
           <div>
-            <span className="font-bold uppercase tracking-wider text-[10px] sm:text-[11px] block mb-0.5">
+            <span className="font-extrabold uppercase tracking-wider text-[10px] sm:text-[11px] block mb-1">
               {block.title}
             </span>
-            <p className="leading-relaxed">{renderTextWithBold(block.text)}</p>
+            <p className="leading-relaxed font-medium">{renderTextWithBold(block.text)}</p>
           </div>
         </div>
       );
     }
 
     case 'divider': {
-      return <hr className="border-t border-slate-200 my-3" />;
+      return <hr className="border-t border-white/10 my-4" />;
     }
 
     case 'paragraph':
     default: {
       return (
-        <p className="text-slate-700 text-xs sm:text-sm leading-relaxed my-1.5">
+        <p className="text-slate-300 text-xs sm:text-sm leading-relaxed my-2 font-normal">
           {renderTextWithBold(block.text)}
         </p>
       );
